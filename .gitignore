@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.env
+
+# Data - keeping large files out of git, but keep folder structure
+data/raw/cbsa/*
+data/raw/tarc/*
+data/raw/wits/*
+data/raw/wto/*
+data/raw/wco/*
+data/interim/*
+data/processed/*
+data/external/*
+
+!data/raw/cbsa/.gitkeep
+!data/raw/taric/.gitkeep
+!data/raw/wits/.gitkeep
+!data/raw/wto/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+
+noteboks/00_debug.ipynb
+
+# OS editor
+.DS_Store
+.vscode/
+
+# Exclude notes file, this one's for personal tracking of the project
+notes.txt
