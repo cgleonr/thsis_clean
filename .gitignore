@@ -27,6 +27,11 @@ data/external/*
 
 noteboks/00_debug.ipynb
 
+# Models - keeping large model files out of git, but keep folder structure
+data/models/hierearchical/best_model.pt
+data/models/baseline/*
+
+
 # OS editor
 .DS_Store
 .vscode/
