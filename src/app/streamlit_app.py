@@ -60,7 +60,7 @@ st.set_page_config(
 )
 
 # Title and description
-st.title("Machine Learning-Based HS Code Classification")
+st.title("🌍 Machine Learning-Based HS Code Classification")
 st.markdown("""
 This tool uses machine learning to automatically classify product descriptions into 
 Harmonized System (HS) codes and estimate applicable customs duties.
@@ -121,7 +121,7 @@ def load_hierarchical_model():
         return None
     
     try:
-        model_dir_options = ["models/hierarchical", "../../models/hierarchical", "../models/hierarchical"]
+        model_dir_options = ["data/models/hierarchical", "models/hierarchical", "../../data/models/hierarchical", "../data/models/hierarchical"]
         
         for model_dir in model_dir_options:
             model_dir_path = Path(model_dir)
@@ -321,7 +321,7 @@ with col1:
         "Enter Product Description",
         value="",
         height=100,
-        placeholder="e.g., 'smartphone with 5G connectivity', 'laptop computer', 'leather shoes', 'cotton t-shirt', 'green coffee beans', 'red wine'",
+        placeholder="e.g.: 'printed matter for industrial use', 'Basic carbon disulphide type 2', 'domestic appliances, for industrial use', 'high quality meat and edible meat offal', 'cells and batteries, for industrial use'",
         help="Describe the product you want to classify"
     )
     
