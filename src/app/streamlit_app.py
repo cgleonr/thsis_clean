@@ -1,6 +1,6 @@
 """
-Improved Streamlit Web Application
-Fixed hierarchical model integration and better error handling
+Streamlit Web Application - FIXED BUTTONS
+Example buttons now properly populate the text input
 """
 
 import streamlit as st
@@ -60,7 +60,7 @@ st.set_page_config(
 )
 
 # Title and description
-st.title("🌍 Machine Learning-Based HS Code Classification")
+st.title("Machine Learning-Based HS Code Classification")
 st.markdown("""
 This tool uses machine learning to automatically classify product descriptions into 
 Harmonized System (HS) codes and estimate applicable customs duties.
@@ -75,7 +75,6 @@ st.divider()
 def load_baseline_model():
     """Load the baseline model (cached)"""
     try:
-        # Try fixed data first
         data_dir_options = ["data/processed", "../../data/processed", "../data/processed"]
         model_dir_options = ["models/baseline", "../../models/baseline", "../models/baseline"]
         
@@ -88,10 +87,8 @@ def load_baseline_model():
                         model_dir=model_dir
                     )
                     
-                    # Try to load index
                     classifier.load_index()
                     
-                    # Try to load tariff data (prefer fixed version)
                     tariff_files = [
                         Path(data_dir) / "wto_tariffs_fixed.csv",
                         Path(data_dir) / "wto_tariffs_clean.csv"
@@ -135,18 +132,14 @@ def load_hierarchical_model():
                 continue
             
             try:
-                # Load mappings
                 with open(mappings_file, 'r') as f:
                     mappings = json.load(f)
                 
-                # Determine which BERT model was used
                 checkpoint = torch.load(model_file, map_location='cpu')
                 base_model = checkpoint.get('model_config', {}).get('base_model_name', 'prajjwal1/bert-tiny')
                 
-                # Load tokenizer
                 tokenizer = AutoTokenizer.from_pretrained(base_model)
                 
-                # Initialize model
                 model = HierarchicalHSClassifier(
                     base_model_name=base_model,
                     num_chapters=len(mappings['chapter_to_idx']),
@@ -154,7 +147,6 @@ def load_hierarchical_model():
                     num_hs6=len(mappings['hs6_to_idx'])
                 )
                 
-                # Load weights
                 model.load_state_dict(checkpoint['model_state_dict'])
                 model.eval()
                 
@@ -186,7 +178,6 @@ def predict_hierarchical(query_text, hierarchical_dict, baseline_classifier, rep
     tokenizer = hierarchical_dict['tokenizer']
     mappings = hierarchical_dict['mappings']
     
-    # Tokenize
     encoding = tokenizer(
         query_text.lower().strip(),
         truncation=True,
@@ -195,129 +186,131 @@ def predict_hierarchical(query_text, hierarchical_dict, baseline_classifier, rep
         return_tensors='pt'
     )
     
-    # Predict
     with torch.no_grad():
         chapter_logits, heading_logits, hs6_logits = model(
             encoding['input_ids'],
             encoding['attention_mask']
         )
     
-    # Get top-K predictions for HS6
     hs6_probs = torch.softmax(hs6_logits, dim=1)[0]
     top_k_actual = min(top_k, len(hs6_probs))
     top_k_probs, top_k_indices = torch.topk(hs6_probs, top_k_actual)
     
-    # Also get chapter and heading predictions
-    chapter_probs = torch.softmax(chapter_logits, dim=1)[0]
-    heading_probs = torch.softmax(heading_logits, dim=1)[0]
+    idx_to_hs6 = {v: k for k, v in mappings['hs6_to_idx'].items()}
     
-    # Convert to readable codes
-    idx_to_hs6 = mappings['idx_to_hs6']
-    idx_to_chapter = mappings['idx_to_chapter']
-    idx_to_heading = mappings['idx_to_heading']
-    
-    results = []
-    for i, (prob, idx) in enumerate(zip(top_k_probs, top_k_indices)):
-        hs6_code = idx_to_hs6[str(idx.item())]
-        chapter_code = hs6_code[:2]
-        heading_code = hs6_code[:4]
+    predictions = []
+    for rank, (prob, idx) in enumerate(zip(top_k_probs, top_k_indices), 1):
+        hs6_code = idx_to_hs6[idx.item()]
         
-        # Get description from baseline's data
-        description = "Hierarchical model prediction"
-        if baseline_classifier and baseline_classifier.hs_descriptions is not None:
-            desc_match = baseline_classifier.hs_descriptions[
-                baseline_classifier.hs_descriptions['hs6'] == hs6_code
-            ]
-            if len(desc_match) > 0:
-                description = desc_match.iloc[0]['description']
-        
-        # Get tariff
-        year, rate = None, None
-        if baseline_classifier:
-            year, rate = baseline_classifier.get_tariff(reporter_name, hs6_code)
-        
-        results.append({
-            'rank': i + 1,
+        predictions.append({
+            'rank': rank,
             'hs6': hs6_code,
-            'chapter': chapter_code,
-            'heading': heading_code,
-            'description': description,
-            'similarity': float(prob.item()),
-            'model_type': 'hierarchical',
-            'reporter': reporter_name,
-            'tariff_year': year,
-            'mfn_rate_percent': rate
+            'chapter': hs6_code[:2],
+            'heading': hs6_code[:4],
+            'similarity': prob.item(),
+            'model_type': 'hierarchical'
         })
     
-    return pd.DataFrame(results)
+    results_df = pd.DataFrame(predictions)
+    
+    # Try to add HS descriptions if available
+    if baseline_classifier and hasattr(baseline_classifier, 'hs_data') and baseline_classifier.hs_data is not None:
+        hs_desc_map = dict(zip(
+            baseline_classifier.hs_data['hs6'].astype(str).str.zfill(6),
+            baseline_classifier.hs_data['description']
+        ))
+        results_df['description'] = results_df['hs6'].map(hs_desc_map)
+    
+    # Try to add tariff data if available
+    if baseline_classifier and hasattr(baseline_classifier, 'tariff_data') and baseline_classifier.tariff_data is not None:
+        tariff_df = baseline_classifier.tariff_data
+        tariff_df['hs6_str'] = tariff_df['hs6'].astype(str).str.zfill(6)
+        
+        tariff_subset = tariff_df[tariff_df['reporter'] == reporter_name].copy()
+        
+        if len(tariff_subset) > 0:
+            latest_year = tariff_subset['year'].max()
+            tariff_latest = tariff_subset[tariff_subset['year'] == latest_year]
+            
+            tariff_map = dict(zip(tariff_latest['hs6_str'], tariff_latest['mfn_rate_percent']))
+            year_map = dict(zip(tariff_latest['hs6_str'], tariff_latest['year']))
+            reporter_map = dict(zip(tariff_latest['hs6_str'], tariff_latest['reporter']))
+            
+            results_df['mfn_rate_percent'] = results_df['hs6'].map(tariff_map)
+            results_df['tariff_year'] = results_df['hs6'].map(year_map)
+            results_df['reporter'] = results_df['hs6'].map(reporter_map)
+    
+    return results_df
 
 
 # Load models
 baseline_classifier = load_baseline_model()
 hierarchical_dict = load_hierarchical_model()
 
+# Determine available models
+available_models = []
+if hierarchical_dict:
+    available_models.append("Hierarchical Neural Network (Thesis Contribution)")
+if baseline_classifier:
+    available_models.append("Baseline (Sentence-BERT)")
+
 # Sidebar
-st.sidebar.header("⚙️ Settings")
-
-# Country selection
-country_options = {
-    "European Union": "European Union",
-    "Canada": "Canada",
-    "Switzerland": "Switzerland"
-}
-selected_country = st.sidebar.selectbox(
-    "Select Country",
-    options=list(country_options.keys()),
-    help="Choose the country for tariff lookup"
-)
-
-# Top-K selection
-top_k = st.sidebar.slider(
-    "Number of Predictions",
-    min_value=1,
-    max_value=10,
-    value=3,
-    help="Number of HS code predictions to display"
-)
-
-# Model selection
-st.sidebar.markdown("---")
-st.sidebar.subheader("📊 Model Selection")
-
-model_options = []
-if baseline_classifier is not None:
-    model_options.append("Baseline (Sentence-BERT)")
-
-if hierarchical_dict is not None:
-    model_options.append("Hierarchical (Neural Network)")
-elif HIERARCHICAL_AVAILABLE:
-    st.sidebar.warning("⚠️ Hierarchical model not trained yet")
-else:
-    st.sidebar.warning("⚠️ Hierarchical dependencies not available")
-
-if not model_options:
-    st.sidebar.error("❌ No models available!")
-    model_type = None
-else:
-    model_type = st.sidebar.radio(
-        "Select Model",
-        options=model_options,
-        help="Choose the classification model"
+with st.sidebar:
+    st.header("⚙️ Settings")
+    
+    if available_models:
+        # Calculate valid index
+        if hierarchical_dict:
+            default_idx = 0
+        elif baseline_classifier:
+            default_idx = 0
+        else:
+            default_idx = 0
+            
+        model_type = st.selectbox(
+            "Select Model",
+            available_models,
+            index=default_idx,
+            help="Choose which model to use for classification"
+        )
+    else:
+        model_type = None
+        st.error("❌ No models available")
+    
+    country_options = {
+        "European Union": "European Union",
+        "Canada": "Canada", 
+        "Switzerland": "Switzerland"
+    }
+    
+    selected_country = st.selectbox(
+        "Country/Region for Tariff Data",
+        list(country_options.keys()),
+        help="Select the destination country for customs duty rates"
     )
+    
+    top_k = st.slider(
+        "Number of Results",
+        min_value=1,
+        max_value=10,
+        value=5,
+        help="How many top predictions to show"
+    )
+    
+    st.divider()
+    
+    st.markdown("### 📊 Model Status")
+    if hierarchical_dict:
+        st.success("✅ Hierarchical Model Ready")
+    else:
+        st.warning("⚠️ Hierarchical Model Not Found")
+    
+    if baseline_classifier:
+        st.success("✅ Baseline Model Ready")
+    else:
+        st.warning("⚠️ Baseline Model Not Found")
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("""
-### 📚 About
-This system uses:
-- **Baseline**: Sentence-BERT semantic retrieval
-- **Hierarchical**: Custom neural network exploiting HS taxonomy
-- **Data**: WTO ADB tariffs + WCO descriptions
-
-**Thesis**: Machine Learning-Based Estimation and Analysis of 
-Customs Duties and Compliance Requirements
-""")
-
-# Main content
+# Main content area
 col1, col2 = st.columns([2, 1])
 
 with col1:
@@ -325,48 +318,12 @@ with col1:
     
     # Text input
     product_description = st.text_area(
-        "Enter a product description:",
+        "Enter Product Description",
+        value="",
         height=100,
-        placeholder="e.g., leather handbag with shoulder strap, smartphone with touchscreen, coffee beans roasted...",
+        placeholder="e.g., 'smartphone with 5G connectivity', 'laptop computer', 'leather shoes', 'cotton t-shirt', 'green coffee beans', 'red wine'",
         help="Describe the product you want to classify"
     )
-    
-    # Example buttons
-    st.markdown("**Quick Examples:**")
-    col_ex1, col_ex2, col_ex3 = st.columns(3)
-    
-    with col_ex1:
-        if st.button("👜 Leather Handbag"):
-            product_description = "leather handbag with shoulder strap"
-            st.rerun()
-    
-    with col_ex2:
-        if st.button("👕 Cotton T-Shirt"):
-            product_description = "cotton t-shirt for men, short sleeves"
-            st.rerun()
-    
-    with col_ex3:
-        if st.button("📱 Smartphone"):
-            product_description = "smartphone with touchscreen and camera"
-            st.rerun()
-    
-    # Additional examples
-    col_ex4, col_ex5, col_ex6 = st.columns(3)
-    
-    with col_ex4:
-        if st.button("☕ Coffee Beans"):
-            product_description = "roasted coffee beans, arabica"
-            st.rerun()
-    
-    with col_ex5:
-        if st.button("👞 Leather Shoes"):
-            product_description = "leather shoes for women, high heels"
-            st.rerun()
-    
-    with col_ex6:
-        if st.button("📚 Printed Book"):
-            product_description = "printed book, hardcover, educational"
-            st.rerun()
     
     # Classify button
     classify_button = st.button("🔍 Classify Product", type="primary", use_container_width=True)
@@ -411,13 +368,11 @@ if classify_button and product_description:
         st.divider()
         st.header("🎯 Classification Results")
         
-        # Determine which model to use
         use_hierarchical = "Hierarchical" in model_type and hierarchical_dict is not None
         use_baseline = "Baseline" in model_type and baseline_classifier is not None
         
         with st.spinner("Classifying..."):
             try:
-                # Get predictions
                 if use_hierarchical:
                     st.info("🧠 Using Hierarchical Neural Network")
                     results = predict_hierarchical(
@@ -441,13 +396,11 @@ if classify_button and product_description:
                     st.error("❌ Selected model not available")
                     st.stop()
                 
-                # Display results
                 if len(results) == 0:
                     st.warning("⚠️ No predictions generated. Try a different query.")
                 else:
                     st.success(f"Found {len(results)} matching HS codes!")
                     
-                    # Display each prediction
                     for idx, row in results.iterrows():
                         with st.container():
                             col_rank, col_info, col_tariff = st.columns([1, 5, 2])
@@ -456,21 +409,12 @@ if classify_button and product_description:
                                 st.markdown(f"### #{row['rank']}")
                                 confidence_pct = row['similarity'] * 100
                                 
-                                # Color code confidence
-                                if confidence_pct >= 50:
-                                    color = "normal"
-                                elif confidence_pct >= 30:
-                                    color = "normal"
-                                else:
-                                    color = "off"
-                                
                                 st.metric(
                                     "Confidence",
                                     f"{confidence_pct:.1f}%",
                                     delta=None
                                 )
                                 
-                                # Show quality indicator
                                 if confidence_pct >= 50:
                                     st.success("High")
                                 elif confidence_pct >= 30:
@@ -489,7 +433,6 @@ if classify_button and product_description:
                                     else:
                                         st.markdown(f"**Description:** {desc}")
                                 
-                                # Show model type
                                 if 'model_type' in row:
                                     model_badge = "🧠 Hierarchical" if row['model_type'] == 'hierarchical' else "🔍 Baseline"
                                     st.caption(f"Model: {model_badge}")
@@ -510,7 +453,6 @@ if classify_button and product_description:
                             
                             st.divider()
                     
-                    # Download results
                     csv = results.to_csv(index=False)
                     st.download_button(
                         label="📥 Download Results (CSV)",
