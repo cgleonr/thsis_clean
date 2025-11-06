@@ -37,7 +37,6 @@ else:
 print(f"Selected {len(selected_codes_df)} codes for dataset generation.")
 
 # --- Helper Function for Generating Variations ---
-# (This is a simplified generator. A more advanced one could use LLMs or complex rules)
 def generate_variations(base_description, hs_code, num_variations=EXAMPLES_PER_CODE):
     variations = set() # Use a set to avoid exact duplicates initially
     variations.add(base_description.strip().lower()) # Add original
@@ -84,7 +83,7 @@ def generate_variations(base_description, hs_code, num_variations=EXAMPLES_PER_C
     # Fill up to num_variations, adding slight modifications if needed to reach the count
     variation_list = list(variations)
     while len(variation_list) < num_variations:
-         # Add slight variants if pool is too small (e.g., adding numbers, generic adjectives)
+         # Add slight variants if pool is too small
          base = random.choice(list(variations))
          variation_list.append(f"{base} type {random.randint(1,5)}")
          if len(variation_list) >= num_variations: break

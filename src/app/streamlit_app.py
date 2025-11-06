@@ -73,7 +73,7 @@ st.divider()
 
 @st.cache_resource
 def load_baseline_model():
-    """Load the baseline model (cached)"""
+    """Load the baseline model"""
     try:
         data_dir_options = ["data/processed", "../../data/processed", "../data/processed"]
         model_dir_options = ["models/baseline", "../../models/baseline", "../models/baseline"]
@@ -136,7 +136,15 @@ def load_hierarchical_model():
                     mappings = json.load(f)
                 
                 checkpoint = torch.load(model_file, map_location='cpu')
-                base_model = checkpoint.get('model_config', {}).get('base_model_name', 'prajjwal1/bert-tiny')
+                
+                # Try multiple keys for base model name
+                if 'model_config' in checkpoint:
+                    config = checkpoint['model_config']
+                    base_model = config.get('base_model') or config.get('base_model_name', 'distilbert-base-uncased')
+                else:
+                    base_model = 'distilbert-base-uncased'
+                
+                logger.info(f"Loading model with base: {base_model}")
                 
                 tokenizer = AutoTokenizer.from_pretrained(base_model)
                 
@@ -213,13 +221,29 @@ def predict_hierarchical(query_text, hierarchical_dict, baseline_classifier, rep
     
     results_df = pd.DataFrame(predictions)
     
-    # Try to add HS descriptions if available
-    if baseline_classifier and hasattr(baseline_classifier, 'hs_data') and baseline_classifier.hs_data is not None:
-        hs_desc_map = dict(zip(
-            baseline_classifier.hs_data['hs6'].astype(str).str.zfill(6),
-            baseline_classifier.hs_data['description']
-        ))
-        results_df['description'] = results_df['hs6'].map(hs_desc_map)
+    # Load HS descriptions from WCO file
+    try:
+        hs_desc_paths = [
+            'data/processed/wco_hs_descriptions.csv',
+            'data/processed/wco_hs_descriptions_clean.csv',
+            '../../data/processed/wco_hs_descriptions.csv',
+            '../data/processed/wco_hs_descriptions.csv'
+        ]
+        
+        hs_desc_df = None
+        for path in hs_desc_paths:
+            if Path(path).exists():
+                hs_desc_df = pd.read_csv(path)
+                hs_desc_df['hs6'] = hs_desc_df['hs6'].astype(str).str.zfill(6)
+                break
+        
+        if hs_desc_df is not None:
+            hs_desc_map = dict(zip(hs_desc_df['hs6'], hs_desc_df['description']))
+            results_df['description'] = results_df['hs6'].map(hs_desc_map)
+        else:
+            logger.warning("WCO HS descriptions file not found")
+    except Exception as e:
+        logger.warning(f"Could not load HS descriptions: {e}")
     
     # Try to add tariff data if available
     if baseline_classifier and hasattr(baseline_classifier, 'tariff_data') and baseline_classifier.tariff_data is not None:
@@ -321,7 +345,7 @@ with col1:
         "Enter Product Description",
         value="",
         height=100,
-        placeholder="e.g.: 'printed matter for industrial use', 'Basic carbon disulphide type 2', 'domestic appliances, for industrial use', 'high quality meat and edible meat offal', 'cells and batteries, for industrial use'",
+        placeholder="e.g., 'smartphone with 5G connectivity', 'laptop computer', 'leather shoes', 'cotton t-shirt', 'green coffee beans', 'red wine'",
         help="Describe the product you want to classify"
     )
     

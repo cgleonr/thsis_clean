@@ -1,242 +1,135 @@
 Training started: distilbert-base-uncased
 Epochs: 30, Batch size: 32, LR: 2e-05
-Train examples: 95,001, Val examples: 16,766
+Train examples: 189,017, Val examples: 33,357
 ================================================================================
 
 Epoch 1/30
-  Train Loss: 5.5276
-  Val Loss: 4.0711
-  Chapter Acc: 0.9353
-  Heading Acc: 0.5815
-  HS6 Acc: 0.1783
-  >>> BEST MODEL SAVED (HS6: 0.1783)
+  Train Loss: 4.2883
+  Val Loss: 2.0915
+  Chapter Acc: 0.9975
+  Heading Acc: 0.9510
+  HS6 Acc: 0.6863
+  >>> BEST MODEL SAVED (HS6: 0.6863)
 
 Epoch 2/30
-  Train Loss: 3.4835
-  Val Loss: 2.7343
-  Chapter Acc: 0.9485
-  Heading Acc: 0.6660
-  HS6 Acc: 0.2119
-  >>> BEST MODEL SAVED (HS6: 0.2119)
+  Train Loss: 1.2203
+  Val Loss: 0.2871
+  Chapter Acc: 0.9981
+  Heading Acc: 0.9900
+  HS6 Acc: 0.9442
+  >>> BEST MODEL SAVED (HS6: 0.9442)
 
 Epoch 3/30
-  Train Loss: 2.4109
-  Val Loss: 1.9560
-  Chapter Acc: 0.9532
-  Heading Acc: 0.6886
-  HS6 Acc: 0.2243
-  >>> BEST MODEL SAVED (HS6: 0.2243)
+  Train Loss: 0.1942
+  Val Loss: 0.0743
+  Chapter Acc: 0.9983
+  Heading Acc: 0.9904
+  HS6 Acc: 0.9771
+  >>> BEST MODEL SAVED (HS6: 0.9771)
 
 Epoch 4/30
-  Train Loss: 1.8345
-  Val Loss: 1.6295
-  Chapter Acc: 0.9557
-  Heading Acc: 0.6937
-  HS6 Acc: 0.2419
-  >>> BEST MODEL SAVED (HS6: 0.2419)
+  Train Loss: 0.0737
+  Val Loss: 0.0700
+  Chapter Acc: 0.9982
+  Heading Acc: 0.9900
+  HS6 Acc: 0.9772
+  >>> BEST MODEL SAVED (HS6: 0.9772)
 
 Epoch 5/30
-  Train Loss: 1.6052
-  Val Loss: 1.5163
-  Chapter Acc: 0.9531
-  Heading Acc: 0.7003
-  HS6 Acc: 0.2482
-  >>> BEST MODEL SAVED (HS6: 0.2482)
+  Train Loss: 0.0623
+  Val Loss: 0.0731
+  Chapter Acc: 0.9982
+  Heading Acc: 0.9900
+  HS6 Acc: 0.9770
 
 Epoch 6/30
-  Train Loss: 1.5136
-  Val Loss: 1.4701
-  Chapter Acc: 0.9478
-  Heading Acc: 0.7054
-  HS6 Acc: 0.2552
-  >>> BEST MODEL SAVED (HS6: 0.2552)
+  Train Loss: 0.0588
+  Val Loss: 0.0804
+  Chapter Acc: 0.9981
+  Heading Acc: 0.9901
+  HS6 Acc: 0.9772
 
 Epoch 7/30
-  Train Loss: 1.4659
-  Val Loss: 1.4451
-  Chapter Acc: 0.9553
-  Heading Acc: 0.7094
-  HS6 Acc: 0.2610
-  >>> BEST MODEL SAVED (HS6: 0.2610)
+  Train Loss: 0.0570
+  Val Loss: 0.0858
+  Chapter Acc: 0.9979
+  Heading Acc: 0.9899
+  HS6 Acc: 0.9769
 
 Epoch 8/30
-  Train Loss: 1.4340
-  Val Loss: 1.4253
-  Chapter Acc: 0.9562
-  Heading Acc: 0.7119
-  HS6 Acc: 0.2683
-  >>> BEST MODEL SAVED (HS6: 0.2683)
+  Train Loss: 0.0559
+  Val Loss: 0.0918
+  Chapter Acc: 0.9981
+  Heading Acc: 0.9902
+  HS6 Acc: 0.9769
 
 Epoch 9/30
-  Train Loss: 1.4075
-  Val Loss: 1.4093
-  Chapter Acc: 0.9563
-  Heading Acc: 0.7146
-  HS6 Acc: 0.2721
-  >>> BEST MODEL SAVED (HS6: 0.2721)
+  Train Loss: 0.0553
+  Val Loss: 0.0961
+  Chapter Acc: 0.9980
+  Heading Acc: 0.9901
+  HS6 Acc: 0.9769
 
 Epoch 10/30
-  Train Loss: 1.3862
-  Val Loss: 1.3957
-  Chapter Acc: 0.9574
-  Heading Acc: 0.7187
-  HS6 Acc: 0.2794
-  >>> BEST MODEL SAVED (HS6: 0.2794)
+  Train Loss: 0.0548
+  Val Loss: 0.0995
+  Chapter Acc: 0.9981
+  Heading Acc: 0.9901
+  HS6 Acc: 0.9769
 
 Epoch 11/30
-  Train Loss: 1.3672
-  Val Loss: 1.3867
-  Chapter Acc: 0.9574
-  Heading Acc: 0.7227
-  HS6 Acc: 0.2824
-  >>> BEST MODEL SAVED (HS6: 0.2824)
+  Train Loss: 0.0543
+  Val Loss: 0.1023
+  Chapter Acc: 0.9980
+  Heading Acc: 0.9901
+  HS6 Acc: 0.9768
 
 Epoch 12/30
-  Train Loss: 1.3491
-  Val Loss: 1.3804
-  Chapter Acc: 0.9532
-  Heading Acc: 0.7201
-  HS6 Acc: 0.2836
-  >>> BEST MODEL SAVED (HS6: 0.2836)
+  Train Loss: 0.0537
+  Val Loss: 0.1048
+  Chapter Acc: 0.9981
+  Heading Acc: 0.9905
+  HS6 Acc: 0.9769
 
 Epoch 13/30
-  Train Loss: 1.3324
-  Val Loss: 1.3702
-  Chapter Acc: 0.9562
-  Heading Acc: 0.7222
-  HS6 Acc: 0.2867
-  >>> BEST MODEL SAVED (HS6: 0.2867)
+  Train Loss: 0.0535
+  Val Loss: 0.1068
+  Chapter Acc: 0.9978
+  Heading Acc: 0.9900
+  HS6 Acc: 0.9769
 
 Epoch 14/30
-  Train Loss: 1.3168
-  Val Loss: 1.3628
-  Chapter Acc: 0.9560
-  Heading Acc: 0.7210
-  HS6 Acc: 0.2886
-  >>> BEST MODEL SAVED (HS6: 0.2886)
+  Train Loss: 0.0532
+  Val Loss: 0.1091
+  Chapter Acc: 0.9980
+  Heading Acc: 0.9899
+  HS6 Acc: 0.9767
 
 Epoch 15/30
-  Train Loss: 1.3014
-  Val Loss: 1.3585
-  Chapter Acc: 0.9550
-  Heading Acc: 0.7210
-  HS6 Acc: 0.2896
-  >>> BEST MODEL SAVED (HS6: 0.2896)
+  Train Loss: 0.0527
+  Val Loss: 0.1103
+  Chapter Acc: 0.9981
+  Heading Acc: 0.9902
+  HS6 Acc: 0.9767
 
 Epoch 16/30
-  Train Loss: 1.2866
-  Val Loss: 1.3538
-  Chapter Acc: 0.9553
-  Heading Acc: 0.7216
-  HS6 Acc: 0.2961
-  >>> BEST MODEL SAVED (HS6: 0.2961)
+  Train Loss: 0.0523
+  Val Loss: 0.1127
+  Chapter Acc: 0.9980
+  Heading Acc: 0.9900
+  HS6 Acc: 0.9766
 
 Epoch 17/30
-  Train Loss: 1.2723
-  Val Loss: 1.3519
-  Chapter Acc: 0.9539
-  Heading Acc: 0.7211
-  HS6 Acc: 0.2930
+  Train Loss: 0.0520
+  Val Loss: 0.1134
+  Chapter Acc: 0.9978
+  Heading Acc: 0.9905
+  HS6 Acc: 0.9768
 
 Epoch 18/30
-  Train Loss: 1.2594
-  Val Loss: 1.3487
-  Chapter Acc: 0.9550
-  Heading Acc: 0.7214
-  HS6 Acc: 0.2961
-  >>> BEST MODEL SAVED (HS6: 0.2961)
+  Train Loss: 0.0517
+  Val Loss: 0.1150
+  Chapter Acc: 0.9980
+  Heading Acc: 0.9903
+  HS6 Acc: 0.9768
 
-Epoch 19/30
-  Train Loss: 1.2466
-  Val Loss: 1.3476
-  Chapter Acc: 0.9548
-  Heading Acc: 0.7192
-  HS6 Acc: 0.2977
-  >>> BEST MODEL SAVED (HS6: 0.2977)
-
-Epoch 20/30
-  Train Loss: 1.2350
-  Val Loss: 1.3460
-  Chapter Acc: 0.9529
-  Heading Acc: 0.7226
-  HS6 Acc: 0.2967
-
-Epoch 21/30
-  Train Loss: 1.2240
-  Val Loss: 1.3463
-  Chapter Acc: 0.9534
-  Heading Acc: 0.7227
-  HS6 Acc: 0.2968
-
-Epoch 22/30
-  Train Loss: 1.2142
-  Val Loss: 1.3468
-  Chapter Acc: 0.9553
-  Heading Acc: 0.7215
-  HS6 Acc: 0.2988
-  >>> BEST MODEL SAVED (HS6: 0.2988)
-
-Epoch 23/30
-  Train Loss: 1.2052
-  Val Loss: 1.3459
-  Chapter Acc: 0.9527
-  Heading Acc: 0.7201
-  HS6 Acc: 0.2984
-
-Epoch 24/30
-  Train Loss: 1.1963
-  Val Loss: 1.3467
-  Chapter Acc: 0.9550
-  Heading Acc: 0.7193
-  HS6 Acc: 0.2997
-  >>> BEST MODEL SAVED (HS6: 0.2997)
-
-Epoch 25/30
-  Train Loss: 1.1892
-  Val Loss: 1.3483
-  Chapter Acc: 0.9559
-  Heading Acc: 0.7216
-  HS6 Acc: 0.2986
-
-Epoch 26/30
-  Train Loss: 1.1821
-  Val Loss: 1.3475
-  Chapter Acc: 0.9551
-  Heading Acc: 0.7208
-  HS6 Acc: 0.2998
-  >>> BEST MODEL SAVED (HS6: 0.2998)
-
-Epoch 27/30
-  Train Loss: 1.1760
-  Val Loss: 1.3486
-  Chapter Acc: 0.9525
-  Heading Acc: 0.7210
-  HS6 Acc: 0.2997
-
-Epoch 28/30
-  Train Loss: 1.1705
-  Val Loss: 1.3494
-  Chapter Acc: 0.9557
-  Heading Acc: 0.7209
-  HS6 Acc: 0.3000
-  >>> BEST MODEL SAVED (HS6: 0.3000)
-
-Epoch 29/30
-  Train Loss: 1.1648
-  Val Loss: 1.3500
-  Chapter Acc: 0.9546
-  Heading Acc: 0.7199
-  HS6 Acc: 0.2999
-
-Epoch 30/30
-  Train Loss: 1.1608
-  Val Loss: 1.3505
-  Chapter Acc: 0.9553
-  Heading Acc: 0.7202
-  HS6 Acc: 0.2997
-
-
-================================================================================
-TRAINING COMPLETE
-Best HS6 Accuracy: 0.3000
-Model saved to: models\hierarchical

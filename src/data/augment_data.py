@@ -2,10 +2,6 @@
 """
 Standalone data augmentation script.
 Generates comprehensive training data with rich descriptions for common products.
-
-Usage:
-    python augment_data.py
-
 Output:
     data/processed/synthetic_train.csv
 """
@@ -18,7 +14,7 @@ from pathlib import Path
 # Set random seed for reproducibility
 random.seed(42)
 
-# Rich training data with detailed descriptions
+# training data with detailed descriptions
 COMMON_PRODUCTS = {
     # Smartphones - HS6 851712
     '851712': [
@@ -563,7 +559,11 @@ COMMON_PRODUCTS = {
 
 
 def generate_augmented_dataset():
-    """Generate comprehensive training dataset with rich descriptions."""
+    """Generate comprehensive training dataset with rich descriptions.
+    1. Combine common product descriptions for selected HS6 codes.
+    2. Remove exact duplicates.
+    3. Save to CSV file.
+    4. Print dataset statistics and verification queries."""
     
     print("="*70)
     print("GENERATING AUGMENTED TRAINING DATASET")

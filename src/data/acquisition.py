@@ -16,9 +16,16 @@ logger = logging.getLogger(__name__)
 
 
 class DataAcquisition:
-    """Handles downloading and initial validation of customs datasets"""
+    """Handles downloading and initial validation of customs datasets from various sources.
+     Args:
+        raw_data_dir: Directory to store raw downloaded data
+     """
     
     def __init__(self, raw_data_dir: str = "data/raw"):
+        """Initialize DataAcquisition with raw data directory
+         Args:
+            raw_data_dir: Directory to store raw downloaded data
+         """
         self.raw_data_dir = Path(raw_data_dir)
         self.raw_data_dir.mkdir(parents=True, exist_ok=True)
         
@@ -68,12 +75,9 @@ class DataAcquisition:
         ])
     
     def load_wco_hs_descriptions(self, version: str = "HS2022") -> pd.DataFrame:
-        """
-        Load WCO Harmonized System descriptions
-        
+        """Load WCO Harmonized System descriptions
         Args:
             version: HS version (default: HS2022)
-        
         Returns:
             DataFrame with HS codes and descriptions
         """
@@ -101,12 +105,10 @@ class DataAcquisition:
     ) -> dict:
         """
         Validate data quality and return statistics
-        
         Args:
             df: DataFrame to validate
             required_columns: List of required column names
             name: Dataset name for logging
-        
         Returns:
             Dictionary with validation statistics
         """
@@ -147,10 +149,8 @@ class DataAcquisition:
     def normalize_hs_code(self, code: str) -> Optional[str]:
         """
         Normalize HS code to 6-digit format
-        
         Args:
             code: Raw HS code string
-        
         Returns:
             6-digit zero-padded HS code or None if invalid
         """

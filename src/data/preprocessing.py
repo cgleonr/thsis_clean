@@ -30,11 +30,9 @@ class DataPreprocessor:
     def detect_columns(self, df: pd.DataFrame, col_type: str) -> Optional[str]:
         """
         Automatically detect column names based on keywords
-        
         Args:
             df: DataFrame to search
             col_type: Type of column ('hs_code', 'description', 'tariff', etc.)
-        
         Returns:
             Detected column name or None
         """
@@ -60,10 +58,8 @@ class DataPreprocessor:
     def normalize_hs_code(self, code: str) -> Optional[str]:
         """
         Normalize HS code to 6-digit format
-        
         Args:
             code: Raw HS code string
-        
         Returns:
             6-digit zero-padded HS code or None
         """
@@ -85,10 +81,8 @@ class DataPreprocessor:
     def extract_hs_levels(self, hs6: str) -> dict:
         """
         Extract hierarchical HS levels from HS6 code
-        
         Args:
             hs6: 6-digit HS code
-        
         Returns:
             Dict with chapter (HS2), heading (HS4), subheading (HS6)
         """
@@ -104,10 +98,8 @@ class DataPreprocessor:
     def clean_text_description(self, text: str) -> str:
         """
         Clean and normalize text descriptions
-        
         Args:
             text: Raw description text
-        
         Returns:
             Cleaned text
         """
@@ -133,10 +125,8 @@ class DataPreprocessor:
     def process_wto_adb(self, input_file: Optional[str] = None) -> pd.DataFrame:
         """
         Process WTO ADB tariff data with flexible column detection
-        
         Args:
             input_file: Path to raw WTO file (optional)
-        
         Returns:
             Processed DataFrame
         """
@@ -223,10 +213,8 @@ class DataPreprocessor:
     ) -> pd.DataFrame:
         """
         Process WCO HS descriptions with flexible column detection
-        
         Args:
             input_file: Path to raw WCO file (optional)
-        
         Returns:
             Processed DataFrame
         """
@@ -303,7 +291,6 @@ class DataPreprocessor:
     def create_unified_dataset(self) -> pd.DataFrame:
         """
         Merge WTO tariffs and WCO descriptions into unified dataset
-        
         Returns:
             Unified DataFrame ready for modeling
         """

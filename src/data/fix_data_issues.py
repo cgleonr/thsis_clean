@@ -13,7 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 def diagnose_wco_descriptions(file_path: str):
-    """Diagnose WCO descriptions data quality"""
+    """Diagnose WCO descriptions data quality
+    Args:
+        file_path: Path to WCO descriptions CSV file
+    """
     logger.info("=" * 60)
     logger.info("DIAGNOSING WCO DESCRIPTIONS")
     logger.info("=" * 60)
@@ -43,7 +46,9 @@ def diagnose_wco_descriptions(file_path: str):
 
 
 def diagnose_tariff_data(file_path: str):
-    """Diagnose tariff data quality"""
+    """Diagnose tariff data quality
+    Args:
+        file_path: Path to tariff CSV file"""
     logger.info("\n" + "=" * 60)
     logger.info("DIAGNOSING TARIFF DATA")
     logger.info("=" * 60)
@@ -81,7 +86,10 @@ def diagnose_tariff_data(file_path: str):
 
 
 def fix_wco_descriptions(input_path: str, output_path: str):
-    """Clean and fix WCO descriptions"""
+    """Clean and fix WCO descriptions
+    Args:
+        input_path: Path to input WCO descriptions CSV file
+        output_path: Path to save cleaned WCO descriptions CSV file"""
     logger.info("\n" + "=" * 60)
     logger.info("FIXING WCO DESCRIPTIONS")
     logger.info("=" * 60)
@@ -112,7 +120,10 @@ def fix_wco_descriptions(input_path: str, output_path: str):
 
 
 def fix_tariff_data(input_path: str, output_path: str):
-    """Clean and fix tariff data"""
+    """Clean and fix tariff data
+    Args:
+        input_path: Path to input tariff CSV file
+        output_path: Path to save cleaned tariff CSV file"""
     logger.info("\n" + "=" * 60)
     logger.info("FIXING TARIFF DATA")
     logger.info("=" * 60)

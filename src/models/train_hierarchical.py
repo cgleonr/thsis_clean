@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 CONFIG = {
     'base_model': 'distilbert-base-uncased',  # Better than bert-tiny
     'max_length': 128,
-    'batch_size': 32,  # Increase if you have more GPU memory
+    'batch_size': 32,
     'epochs': 30,
     'learning_rate': 2e-5,
     'warmup_steps': 500,
@@ -33,7 +33,7 @@ CONFIG = {
     'chapter_weight': 0.2,
     'heading_weight': 0.3,
     'hs6_weight': 0.5,  # Focus on final classification
-    'device': 'cuda' if torch.cuda.is_available() else 'cpu'
+    'device': 'cuda' if torch.cuda.is_available() else 'cpu' #try to use GPU unlesss not available
 }
 
 
@@ -240,7 +240,7 @@ def evaluate(model, dataloader, device, config):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data', type=str, default='data/processed/synthetic_train.csv')
+    parser.add_argument('--data', type=str, default='data/processed/wco_hs_training_data.csv')
     parser.add_argument('--output', type=str, default='models/hierarchical')
     args = parser.parse_args()
     
