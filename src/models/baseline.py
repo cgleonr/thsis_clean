@@ -247,9 +247,17 @@ class BaselineHSClassifier:
 
 def demo():
     """Run demonstration of baseline model"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Train baseline HS classifier')
+    parser.add_argument('--data', type=str, default='data/processed/wco_hs_descriptions.csv',
+                        help='Path to HS descriptions file')
+    parser.add_argument('--tariffs', type=str, default='data/processed/wto_tariffs_fixed.csv',
+                        help='Path to tariffs file')
+    args = parser.parse_args()
     
     logger.info("=" * 60)
-    logger.info("BASELINE MODEL DEMONSTRATION")
+    logger.info("BASELINE MODEL TRAINING")
     logger.info("=" * 60)
     
     # Initialize classifier
@@ -259,16 +267,13 @@ def demo():
         model_dir="models/baseline"
     )
     
-    # Build or load index
-    try:
-        classifier.load_index()
-        logger.info("Loaded existing index")
-    except FileNotFoundError:
-        logger.info("Building new index...")
-        classifier.build_index()
+    # Build index from specified data file
+    logger.info(f"Building index from: {args.data}")
+    classifier.build_index(descriptions_file=args.data)
     
     # Load tariff data
-    classifier.load_tariff_data()
+    logger.info(f"Loading tariffs from: {args.tariffs}")
+    classifier.load_tariff_data(tariffs_file=args.tariffs)
     
     # Save model
     classifier.save_model()
@@ -283,7 +288,9 @@ def demo():
         "cotton t-shirt for men",
         "smartphone with touchscreen",
         "coffee beans, roasted",
-        "wooden dining table"
+        "wooden dining table",
+        "bovine animals for breeding",
+        "equines for commercial use"
     ]
     
     for query in test_queries:
@@ -305,7 +312,8 @@ def demo():
             logger.info(f"     {row['description'][:80]}...")
     
     logger.info("\n" + "=" * 60)
-    logger.info("Baseline model demonstration complete!")
+    logger.info(f"✓ Baseline model trained on {len(classifier.hs_descriptions)} HS codes")
+    logger.info(f"✓ Model saved to: models/baseline")
     logger.info("=" * 60)
 
 

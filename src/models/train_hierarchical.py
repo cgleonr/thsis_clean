@@ -38,7 +38,13 @@ CONFIG = {
 
 
 class HierarchicalHSClassifier(nn.Module):
-    """Hierarchical HS code classifier with 3 prediction heads"""
+    """Hierarchical HS code classifier with 3 prediction heads
+    Args:
+        base_model_name: Pretrained model name
+        num_chapters: Number of chapter classes
+        num_headings: Number of heading classes
+        num_hs6: Number of HS6 classes
+        dropout: Dropout rate"""
     
     def __init__(self, base_model_name, num_chapters, num_headings, num_hs6, dropout=0.1):
         super().__init__()
@@ -53,6 +59,14 @@ class HierarchicalHSClassifier(nn.Module):
         self.hs6_head = nn.Linear(hidden_size, num_hs6)
     
     def forward(self, input_ids, attention_mask):
+        """Forward pass
+        Args:
+            input_ids: Tensor of shape (batch_size, seq_length)
+            attention_mask: Tensor of shape (batch_size, seq_length)
+        Returns:
+            chapter_logits: Tensor of shape (batch_size, num_chapters)
+            heading_logits: Tensor of shape (batch_size, num_headings)
+            hs6_logits: Tensor of shape (batch_size, num_hs6)"""
         # Get embeddings
         outputs = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
         pooled = outputs.last_hidden_state[:, 0]  # CLS token
@@ -67,7 +81,14 @@ class HierarchicalHSClassifier(nn.Module):
 
 
 class HSDataset(Dataset):
-    """Dataset for HS code classification"""
+    """Dataset for HS code classification
+    Args:
+        texts: List of product descriptions
+        chapters: List of chapter labels
+        headings: List of heading labels
+        hs6s: List of HS6 labels
+        tokenizer: Pretrained tokenizer
+        max_length: Maximum sequence length for tokenization"""
     
     def __init__(self, texts, chapters, headings, hs6s, tokenizer, max_length):
         self.texts = texts
@@ -81,6 +102,7 @@ class HSDataset(Dataset):
         return len(self.texts)
     
     def __getitem__(self, idx):
+        """Get item at index idx"""
         text = str(self.texts[idx])
         
         encoding = self.tokenizer(
@@ -101,7 +123,12 @@ class HSDataset(Dataset):
 
 
 def load_and_prepare_data(data_file):
-    """Load data and create label mappings"""
+    """Load data and create label mappings
+    Args:
+        data_file: Path to CSV file with columns 'description' and 'hs6'
+    Returns:
+        df: DataFrame with added 'chapter', 'heading', 'chapter_idx', 'heading_idx', 'hs6_idx' columns
+        mappings: Dictionary with label to index mappings for chapters, headings, and hs6 codes"""
     
     logger.info(f"Loading data from {data_file}")
     df = pd.read_csv(data_file)
@@ -136,7 +163,16 @@ def load_and_prepare_data(data_file):
 
 
 def train_epoch(model, dataloader, optimizer, scheduler, device, config):
-    """Train for one epoch"""
+    """Train for one epoch
+    Args:
+        model: The model to train
+        dataloader: DataLoader for training data
+        optimizer: Optimizer
+        scheduler: Learning rate scheduler
+        device: Device to run on
+        config: Configuration dictionary
+    Returns:
+        Average loss over the epoch"""
     
     model.train()
     total_loss = 0
@@ -183,7 +219,14 @@ def train_epoch(model, dataloader, optimizer, scheduler, device, config):
 
 
 def evaluate(model, dataloader, device, config):
-    """Evaluate the model"""
+    """Evaluate the model
+    Args:
+        model: The model to evaluate
+        dataloader: DataLoader for validation data
+        device: Device to run on
+        config: Configuration dictionary
+    Returns:
+        Dictionary with loss and accuracies for chapter, heading, and hs6"""
     
     model.eval()
     total_loss = 0
@@ -239,6 +282,9 @@ def evaluate(model, dataloader, device, config):
 
 
 def main():
+    """Main training loop
+    Parses arguments, loads data, initializes model, and runs training loop
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', type=str, default='data/processed/wco_hs_training_data.csv')
     parser.add_argument('--output', type=str, default='models/hierarchical')

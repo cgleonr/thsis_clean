@@ -1,0 +1,5 @@
+Metric,Baseline,Hierarchical
+Top-1,0.9395,0.9715
+Top-3,0.9755,0.977
+Top-5,0.9815,0.979
+Top-10,0.986,0.985

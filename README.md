@@ -148,4 +148,4 @@ This project is part of a Master's thesis at Hochschule Luzern.
 
 ---
 
-**Status**: Active Development (October 2025)
+**Status**: Active Development (Novermber 2025)
