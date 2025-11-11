@@ -124,7 +124,7 @@ python src/models/baseline.py
 python src/models/train_hierarchical.py
 ```
 - Training time: 2-4 hours on GPU
-- Model size: ~250 MB
+- Model size: ~840 MB
 - Best model saved at epoch with highest validation HS6 accuracy
 
 ### Running the Web Application
