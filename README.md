@@ -148,7 +148,6 @@ thesis-clean/
 │   │   └── augment_data.py          # Data augmentation script
 │   ├── models/
 │   │   ├── baseline.py              # Sentence-BERT retrieval model
-│   │   ├── hierarchical.py          # Hierarchical classifier architecture
 │   │   └── train_hierarchical.py    # Training script
 │   └── app/
 │       └── streamlit_app.py         # Web interface
@@ -158,10 +157,8 @@ thesis-clean/
 │       └── wto_model_can_eu_che.csv     # Tariff data
 ├── models/
 │   ├── baseline/
-│   │   ├── index.faiss              # FAISS vector index
-│   │   └── index_data.pkl           # Metadata
 │   └── hierarchical/
-│       ├── best_model.pt            # Trained model weights
+│       ├── best_model.pt            # Trained model weights (not included due to file size constraints)
 │       ├── label_mappings.json      # Class mappings
 │       └── training_log.txt         # Training metrics
 ├── notebooks/
